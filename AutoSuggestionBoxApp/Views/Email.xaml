@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="AutoSuggestionBoxApp.Views.Email"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:AutoSuggestBox;assembly=AutoSuggestBox"
+    Padding="20">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label HorizontalOptions="Start" Text="Helps autocomplete an email by suggesting common domain names" />
+            <local:AutoSuggestBox
+                x:Name="SuggestBox"
+                PlaceholderText="Start entering an email"
+                QuerySubmitted="SuggestBox_QuerySubmitted"
+                TextChanged="SuggestBox_TextChanged" />
+            <Label x:Name="status" Text="" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

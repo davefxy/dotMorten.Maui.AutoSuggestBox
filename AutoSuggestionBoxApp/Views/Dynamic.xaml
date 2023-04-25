@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="AutoSuggestionBoxApp.Views.Dynamic"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:AutoSuggestBox;assembly=AutoSuggestBox"
+    Padding="20">
+    <ScrollView>
+        <StackLayout>
+            <Label
+                FontSize="12"
+                HorizontalOptions="Start"
+                Text="This sample simulates slow auto-complete queries to a server as you type. Results are objects and uses the DisplayMemberPath and render the correct property from the objects returned from the service." />
+
+            <Label HorizontalOptions="Start" Text="Enter at least 3 characters" />
+            <local:AutoSuggestBox
+                x:Name="SuggestBox"
+                DisplayMemberPath="FullDisplayName"
+                PlaceholderText="Enter a US City Name"
+                QuerySubmitted="SuggestBox_QuerySubmitted"
+                TextChanged="SuggestBox_TextChanged"
+                TextMemberPath="DisplayName" />
+
+            <Label x:Name="status" Text="" />
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
