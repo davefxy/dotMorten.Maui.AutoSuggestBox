@@ -6,7 +6,7 @@ using Java.Lang;
 using Microsoft.Maui;
 using Microsoft.Maui.Platform;
 
-namespace AutoSuggestBox.Platforms.Android
+namespace Maui.AutoSuggestBox.Platforms.Android
 {
     /// <summary>
     ///  Extends AutoCompleteTextView to have similar APIs and behavior to UWP's AutoSuggestBox, which greatly simplifies wrapping it

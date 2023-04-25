@@ -1,4 +1,4 @@
-﻿namespace AutoSuggestBox
+﻿namespace Maui.AutoSuggestBox
 {
     /// <summary>
     /// Provides data for the TextChanged event.

@@ -3,7 +3,7 @@
     x:Class="AutoSuggestionBoxApp.Views.Simple"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:AutoSuggestBox;assembly=AutoSuggestBox"
+    xmlns:local="clr-namespace:Maui.AutoSuggestBox;assembly=Maui.AutoSuggestBox"
     Padding="20">
     <ContentPage.Content>
         <StackLayout>
@@ -19,23 +19,6 @@
                 PlaceholderText="Enter another country"
                 QuerySubmitted="SuggestBox_QuerySubmitted"
                 TextChanged="SuggestBox_TextChanged" />
-            <TableView Intent="Form">
-                <TableRoot>
-                    <TableSection Title="Country">
-                        <ViewCell>
-                            <StackLayout Padding="10,0" Orientation="Horizontal">
-                                <Label Text="Origin" VerticalOptions="Center" />
-                                <local:AutoSuggestBox
-                                    x:Name="SuggestBox3"
-                                    PlaceholderText="Enter a country"
-                                    QuerySubmitted="SuggestBox_QuerySubmitted"
-                                    TextChanged="SuggestBox_TextChanged" />
-                            </StackLayout>
-                        </ViewCell>
-                    </TableSection>
-                </TableRoot>
-            </TableView>
-
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

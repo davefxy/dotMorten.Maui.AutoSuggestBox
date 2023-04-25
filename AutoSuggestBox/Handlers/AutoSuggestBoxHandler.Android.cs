@@ -1,9 +1,9 @@
 ﻿#nullable enable
 using Microsoft.Maui.Handlers;
-using AutoSuggestBox.Platforms.Android;
+using Maui.AutoSuggestBox.Platforms.Android;
 using Microsoft.Maui.Platform;
 
-namespace AutoSuggestBox.Handlers;
+namespace Maui.AutoSuggestBox.Handlers;
 
 public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSuggestBoxView>
 {

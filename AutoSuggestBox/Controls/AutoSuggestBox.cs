@@ -1,8 +1,8 @@
 ﻿#nullable enable
-using AutoSuggestBox.Handlers;
+using Maui.AutoSuggestBox.Handlers;
 using System.Windows.Input;
 
-namespace AutoSuggestBox
+namespace Maui.AutoSuggestBox
 {
     public class AutoSuggestBox : View, IAutoSuggestBox
     {

@@ -1,13 +1,13 @@
 ﻿#if ANDROID
-using PlatformView = AutoSuggestBox.Platforms.Android.AutoSuggestBoxView;
+using PlatformView = Maui.AutoSuggestBox.Platforms.Android.AutoSuggestBoxView;
 #elif IOS
-using PlatformView = AutoSuggestBox.Platforms.iOS.AutoSuggestBoxView;
+using PlatformView = Maui.AutoSuggestBox.Platforms.iOS.AutoSuggestBoxView;
 #elif (NETSTANDARD || !PLATFORM) || (NET6_0_OR_GREATER && !IOS && !ANDROID)
 using PlatformView = System.Object;
 #endif
 using Microsoft.Maui.Handlers;
 
-namespace AutoSuggestBox.Handlers;
+namespace Maui.AutoSuggestBox.Handlers;
 
 /// <summary>
 /// AutoSuggestBox handler

@@ -1,4 +1,4 @@
-﻿namespace AutoSuggestBox
+﻿namespace Maui.AutoSuggestBox
 {
     /// <summary>
     /// Provides event data for the AutoSuggestBox.QuerySubmitted event.

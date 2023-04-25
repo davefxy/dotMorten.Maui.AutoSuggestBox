@@ -1,6 +1,6 @@
-﻿using AutoSuggestBox.Handlers;
+﻿using Maui.AutoSuggestBox.Handlers;
 
-namespace AutoSuggestBox;
+namespace Maui.AutoSuggestBox;
 
 /// <summary>
 /// This class contains CustomSwitch <see cref="MauiAppBuilder"/> extensions.

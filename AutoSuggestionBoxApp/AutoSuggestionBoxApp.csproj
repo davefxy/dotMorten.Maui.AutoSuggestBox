@@ -69,7 +69,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\AutoSuggestBox\AutoSuggestBox.csproj" />
+	  <ProjectReference Include="..\AutoSuggestBox\Maui.AutoSuggestBox.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

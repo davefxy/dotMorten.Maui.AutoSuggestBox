@@ -5,7 +5,7 @@ using Microsoft.Maui.Platform;
 using System.Runtime.InteropServices;
 using UIKit;
 
-namespace AutoSuggestBox.Platforms.iOS
+namespace Maui.AutoSuggestBox.Platforms.iOS
 {
     /// <summary>
     ///  Creates a UIView with dropdown with a similar API and behavior to UWP's AutoSuggestBoxView

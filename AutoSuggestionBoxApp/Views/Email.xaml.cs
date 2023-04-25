@@ -1,4 +1,4 @@
-﻿using AutoSuggestBox;
+﻿using Maui.AutoSuggestBox;
 namespace AutoSuggestionBoxApp.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]

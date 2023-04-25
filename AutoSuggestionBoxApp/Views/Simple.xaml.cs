@@ -1,4 +1,4 @@
-﻿using AutoSuggestBox;
+﻿using Maui.AutoSuggestBox;
 using System.ComponentModel;
 
 namespace AutoSuggestionBoxApp.Views
@@ -48,8 +48,6 @@ namespace AutoSuggestionBoxApp.Views
                 SuggestBox2.Focus();
             else if (sender == SuggestBox2)
                 SuggestBox2.Unfocus();
-            else if (sender == SuggestBox3)
-                SuggestBox3.Unfocus();
         }
     }
 }

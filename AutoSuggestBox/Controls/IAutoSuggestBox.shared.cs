@@ -1,4 +1,4 @@
-﻿namespace AutoSuggestBox;
+﻿namespace Maui.AutoSuggestBox;
 
 public interface IAutoSuggestBox : IView
 {

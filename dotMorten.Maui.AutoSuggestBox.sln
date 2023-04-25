@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33513.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoSuggestBox", "AutoSuggestBox\AutoSuggestBox.csproj", "{90DB4AF2-D4DD-4C1A-AF1F-CC3D2C5C9562}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maui.AutoSuggestBox", "AutoSuggestBox\Maui.AutoSuggestBox.csproj", "{90DB4AF2-D4DD-4C1A-AF1F-CC3D2C5C9562}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoSuggestionBoxApp", "AutoSuggestionBoxApp\AutoSuggestionBoxApp.csproj", "{49376CD0-BF14-47BA-8783-3E0E89C129AC}"
 EndProject

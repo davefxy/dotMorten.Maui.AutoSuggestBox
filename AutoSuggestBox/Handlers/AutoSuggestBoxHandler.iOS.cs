@@ -1,8 +1,8 @@
 ﻿#nullable enable
 using Microsoft.Maui.Handlers;
-using AutoSuggestBox.Platforms.iOS;
+using Maui.AutoSuggestBox.Platforms.iOS;
 
-namespace AutoSuggestBox.Handlers;
+namespace Maui.AutoSuggestBox.Handlers;
 
 public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSuggestBoxView>
 {

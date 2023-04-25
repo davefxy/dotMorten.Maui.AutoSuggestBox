@@ -1,4 +1,4 @@
-﻿using AutoSuggestBox;
+﻿using Maui.AutoSuggestBox;
 using System.ComponentModel;
 
 namespace AutoSuggestionBoxApp.Views
