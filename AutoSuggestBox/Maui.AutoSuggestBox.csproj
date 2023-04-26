@@ -6,36 +6,51 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
-
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">30.0</SupportedOSPlatformVersion>
 		<RootNamespace>Maui.AutoSuggestBox</RootNamespace>
 	</PropertyGroup>
 	
-  <PropertyGroup>
-    <GitInfoReportImportance>high</GitInfoReportImportance>
-    <PackageId>AutoSuggestBox</PackageId>
-    <Summary>A control that allows you to design any type of switch/ toggle for .NET MAUI. It's also 100% accessible.</Summary>
-    <Authors>Morten Nielsen</Authors>
-    <NeutralLanguage>en</NeutralLanguage>
-    <Copyright>Morten Nielsen</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReleaseNotes></PackageReleaseNotes>
-    <DefineConstants>$(DefineConstants);</DefineConstants>
-    <UseFullSemVerForNuGet>false</UseFullSemVerForNuGet>
-    <Title>Maui AutoSuggest Box</Title>
-    <Description>Use an AutoSuggestBox to provide a list of suggestions for a user to select from as they type.</Description>
-    <Product>$(AssemblyName) ($(TargetFramework))</Product>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
-    <Version>1.0.0</Version>
-    <PackageVersion>$(Version)$(VersionSuffix)</PackageVersion>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageTags>dot,maui,control,custom,autosuggest</PackageTags>
-    <Configurations>Debug;Release</Configurations>
-  </PropertyGroup>
+	<PropertyGroup>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
+		<Version>1.0.0</Version>
+		<NeutralLanguage>en</NeutralLanguage>
+		<LangVersion>latest</LangVersion>
+		<GitInfoReportImportance>high</GitInfoReportImportance>
+		<PackageId>AutoSuggestBox</PackageId>
+		<Summary>A control that allows you to design any type of switch/ toggle for .NET MAUI. It's also 100% accessible.</Summary>
+		<Authors>Morten Nielsen</Authors>
+		<Copyright>Morten Nielsen</Copyright>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReleaseNotes></PackageReleaseNotes>
+		<DefineConstants>$(DefineConstants);</DefineConstants>
+		<UseFullSemVerForNuGet>false</UseFullSemVerForNuGet>
+		<Title>Maui AutoSuggest Box</Title>
+		<Description>Use an AutoSuggestBox to provide a list of suggestions for a user to select from as they type.</Description>
+		<Product>$(AssemblyName) ($(TargetFramework))</Product>
+		<PackageVersion>$(Version)$(VersionSuffix)</PackageVersion>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<PackageTags>Maui dotnet.Maui .net-Maui AutoSuggestBox uikit TextInputLayout</PackageTags>
+		<Configurations>Debug;Release</Configurations>
+		<PackOnBuild>true</PackOnBuild>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<WarningLevel>4</WarningLevel>
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<LangVersion>latest</LangVersion>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-android|AnyCPU'">
+		<CreatePackage>false</CreatePackage>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
+		<CreatePackage>false</CreatePackage>
+	</PropertyGroup>
 
 	<ItemGroup Condition="$(TargetFramework.StartsWith('net7.0-android')) != true">
 		<Compile Remove="**\**\*.Android.cs" />
