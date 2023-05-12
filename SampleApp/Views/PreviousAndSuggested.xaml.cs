@@ -1,7 +1,7 @@
 ﻿using Maui.AutoSuggestBox;
 using System.ComponentModel;
 
-namespace AutoSuggestionBoxApp.Views
+namespace SampleApp.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
     [Description("Previous search and suggested")]

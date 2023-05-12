@@ -1,7 +1,7 @@
 ﻿using Maui.AutoSuggestBox;
 using Microsoft.Maui.Controls.Platform;
 
-namespace AutoSuggestionBoxApp.Views
+namespace SampleApp.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     [System.ComponentModel.Description("Dynamic data lookup")]
@@ -50,7 +50,7 @@ namespace AutoSuggestionBoxApp.Views
             var result = await Task.Run<IEnumerable<City>>(() =>
             {
                 List<City> suggestions = new List<City>();
-                using (var s = typeof(Dynamic).Assembly.GetManifestResourceStream("AutoSuggestionBoxApp.Data.USCities.txt"))
+                using (var s = typeof(Dynamic).Assembly.GetManifestResourceStream("SampleApp.Data.USCities.txt"))
                 {
                     using (var sr = new StreamReader(s))
                     {

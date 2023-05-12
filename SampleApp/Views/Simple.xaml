@@ -1,16 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="AutoSuggestionBoxApp.Views.PreviousAndSuggested"
+    x:Class="SampleApp.Views.Simple"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Maui.AutoSuggestBox;assembly=Maui.AutoSuggestBox"
     Padding="20">
     <ContentPage.Content>
         <StackLayout>
+            <Label HorizontalOptions="Start" Text="Simple Test using a static list of results, and filtering them dynamically based on input" />
             <local:AutoSuggestBox
                 x:Name="SuggestBox1"
-                Focused="SuggestBox1_OnFocused"
-                PlaceholderText="Scan or type"
+                PlaceholderText="Enter a country"
+                QuerySubmitted="SuggestBox_QuerySubmitted"
+                TextChanged="SuggestBox_TextChanged" />
+            <Label x:Name="status" Text="" />
+            <local:AutoSuggestBox
+                x:Name="SuggestBox2"
+                PlaceholderText="Enter another country"
                 QuerySubmitted="SuggestBox_QuerySubmitted"
                 TextChanged="SuggestBox_TextChanged" />
         </StackLayout>

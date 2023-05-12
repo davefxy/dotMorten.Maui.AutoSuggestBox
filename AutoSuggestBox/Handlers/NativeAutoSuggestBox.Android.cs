@@ -165,8 +165,6 @@ namespace Maui.AutoSuggestBox.Platforms.Android
             //Override to avoid updating textbox on itemclick. We'll do this later using TextMemberPath and raise the proper TextChanged event then
         }
 
-
-
         /// <summary>
         /// Raised after the text content of the editable control component is updated.
         /// </summary>

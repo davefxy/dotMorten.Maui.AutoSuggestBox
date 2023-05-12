@@ -17,7 +17,7 @@ namespace Maui.AutoSuggestBox
         /// </summary>
         public AutoSuggestBox()
         {
-            Unloaded += OnAutoSuggestBoxUnloaded;
+            //Unloaded += OnAutoSuggestBoxUnloaded;
         }
 
         /// <summary>
@@ -51,7 +51,6 @@ namespace Maui.AutoSuggestBox
         {
             var box = (AutoSuggestBox)bindable;
             if (!box.suppressTextChangedEvent) //Ensure this property changed didn't get call because we were updating it from the native text property
-            //    box.TextChanged?.Invoke(box, new AutoSuggestBoxTextChangedEventArgs(AutoSuggestBoxTextChangeReason.ProgrammaticChange));
                 box.textChangedEventManager.HandleEvent(box, new AutoSuggestBoxTextChangedEventArgs("", AutoSuggestBoxTextChangeReason.ProgrammaticChange), nameof(TextChanged));
         }
 
@@ -205,14 +204,11 @@ namespace Maui.AutoSuggestBox
         public void RaiseSuggestionChosen(AutoSuggestBoxSuggestionChosenEventArgs args)
         {
             suggestionChosenEventManager.HandleEvent(this, args, nameof(SuggestionChosen));
-            //SuggestionChosen?.Invoke(this, new AutoSuggestBoxSuggestionChosenEventArgs(selectedItem));
         }
 
         /// <summary>
         /// Raised before the text content of the editable control component is updated.
         /// </summary>
-        //public event EventHandler<AutoSuggestBoxSuggestionChosenEventArgs> SuggestionChosen;
-
         public event EventHandler<AutoSuggestBoxTextChangedEventArgs> TextChanged
         {
             add => textChangedEventManager.AddEventHandler(value);
@@ -225,22 +221,19 @@ namespace Maui.AutoSuggestBox
             suppressTextChangedEvent = true; //prevent loop of events raising, as setting this property will make it back into the native control
             Text = args.Text;
             suppressTextChangedEvent = false;
-            //TextChanged?.Invoke(this, new AutoSuggestBoxTextChangedEventArgs(reason));
             textChangedEventManager.HandleEvent(this, args, nameof(TextChanged));
 
-            if (TextChangedCommand?.CanExecute(args.Text) ?? false)
-            {
-                TextChangedCommand.Execute(args.Text);
-            }
+            //if (TextChangedCommand?.CanExecute(args.Text) ?? false)
+            //{
+            //    TextChangedCommand.Execute(args.Text);
+            //}
         }
 
         /// <summary>
         /// Raised after the text content of the editable control component is updated.
         /// </summary>
-        //public event EventHandler<AutoSuggestBoxTextChangedEventArgs> TextChanged;
         public void RaiseQuerySubmitted(AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            //QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(queryText, chosenSuggestion));
             querySubmittedEventManager.HandleEvent(this, args, nameof(QuerySubmitted));
         }
 
@@ -248,18 +241,16 @@ namespace Maui.AutoSuggestBox
         /// Executes QuerySubmitted event
         /// Occurs when the user submits a search query.
         /// </summary>
-        //public event EventHandler<AutoSuggestBoxQuerySubmittedEventArgs> QuerySubmitted;
-
         public event EventHandler<AutoSuggestBoxQuerySubmittedEventArgs> QuerySubmitted
         {
             add => querySubmittedEventManager.AddEventHandler(value);
             remove => querySubmittedEventManager.RemoveEventHandler(value);
         }
 
-        void OnAutoSuggestBoxUnloaded(object? sender, EventArgs e)
-        {
-            Unloaded -= OnAutoSuggestBoxUnloaded;
-            Handler?.DisconnectHandler();
-        }
+        //void OnAutoSuggestBoxUnloaded(object? sender, EventArgs e)
+        //{
+        //    Unloaded -= OnAutoSuggestBoxUnloaded;
+        //    Handler?.DisconnectHandler();
+        //}
     }
 }

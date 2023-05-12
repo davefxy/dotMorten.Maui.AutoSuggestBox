@@ -9,7 +9,6 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
 {
     /// <inheritdoc />
     //protected override AutoSuggestBoxView CreatePlatformView() => new AutoSuggestBoxView(Context);
-
     protected override AutoSuggestBoxView CreatePlatformView() => new(Context);
     protected override void ConnectHandler(AutoSuggestBoxView platformView)
     {
@@ -53,12 +52,10 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
     }
     public static void MapPlaceholderText(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
     {
-        //handler.PlatformView.Hint = view.PlaceholderText;
         handler.PlatformView.PlaceholderText = view.PlaceholderText;
     }
     public static void MapPlaceholderTextColor(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
     {
-        //handler.PlatformView?.SetHintTextColor(view.PlaceholderTextColor.ToPlatform());
         handler.PlatformView?.SetPlaceholderTextColor(view.PlaceholderTextColor);
     }
     public static void MapTextMemberPath(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
@@ -91,16 +88,16 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
         var color = VirtualView?.TextColor;
         platformView.SetTextColor(color.ToPlatform());
     }
+    private void UpdateDisplayMemberPath(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
+    {
+        handler.PlatformView.SetItems(view?.ItemsSource?.OfType<object>(), (o) => FormatType(o, view?.DisplayMemberPath), (o) => FormatType(o, view?.TextMemberPath));
+    }
     private void UpdatePlaceholderTextColor(AutoSuggestBoxView platformView)
     {
         var placeholderColor = VirtualView?.PlaceholderTextColor;
         platformView.SetPlaceholderTextColor(placeholderColor);
     }
-
-    private void UpdateDisplayMemberPath(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
-    {
-        handler.PlatformView.SetItems(view ?.ItemsSource?.OfType<object>(), (o) => FormatType(o, view?.DisplayMemberPath), (o) => FormatType(o, view?.TextMemberPath));
-    }
+    private void UpdatePlaceholderText(AutoSuggestBoxView platformView) => platformView.PlaceholderText = VirtualView?.PlaceholderText;
 
     private void UpdateIsEnabled(AutoSuggestBoxView platformView)
     {

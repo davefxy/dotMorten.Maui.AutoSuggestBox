@@ -1,5 +1,5 @@
 ﻿using Maui.AutoSuggestBox;
-namespace AutoSuggestionBoxApp.Views
+namespace SampleApp.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
     [System.ComponentModel.Description("Email completion")]

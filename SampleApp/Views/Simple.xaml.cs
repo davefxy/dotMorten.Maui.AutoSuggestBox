@@ -1,7 +1,7 @@
 ﻿using Maui.AutoSuggestBox;
 using System.ComponentModel;
 
-namespace AutoSuggestionBoxApp.Views
+namespace SampleApp.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     [Description("Simple auto-completion")]
@@ -18,7 +18,7 @@ namespace AutoSuggestionBoxApp.Views
 
         private void Initialize()
         {
-            using (var s = typeof(Simple).Assembly.GetManifestResourceStream("AutoSuggestionBoxApp.Data.Countries.txt"))
+            using (var s = typeof(Simple).Assembly.GetManifestResourceStream("SampleApp.Data.Countries.txt"))
             {
                 countries = new StreamReader(s).ReadToEnd().Split('\n').Select(t => t.Trim()).ToList();
             }

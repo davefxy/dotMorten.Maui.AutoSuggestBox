@@ -271,7 +271,7 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
 
         private void InputText_EditingChanged(object sender, EventArgs e)
         {
-            TextChanged?.Invoke(this, new AutoSuggestBoxTextChangedEventArgs("", AutoSuggestBoxTextChangeReason.UserInput));
+            TextChanged?.Invoke(this, new AutoSuggestBoxTextChangedEventArgs(this.Text, AutoSuggestBoxTextChangeReason.UserInput));
             IsSuggestionListOpen = true;
         }
 
@@ -299,7 +299,7 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
         }
 
         /// <summary>
-        /// Raised after the text content of the editable control component is updated.
+        /// Raised after the text config of the editable control component is updated.
         /// </summary>
         public event EventHandler<AutoSuggestBoxTextChangedEventArgs> TextChanged;
 
@@ -309,7 +309,7 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
         public event EventHandler<AutoSuggestBoxQuerySubmittedEventArgs> QuerySubmitted;
 
         /// <summary>
-        /// Raised before the text content of the editable control component is updated.
+        /// Raised before the text config of the editable control component is updated.
         /// </summary>
         public event EventHandler<AutoSuggestBoxSuggestionChosenEventArgs> SuggestionChosen;
 
@@ -334,11 +334,11 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
 
                 var item = _items.ElementAt(indexPath.Row);
 
-                //cell.TextLabel.Text = _labelFunc(item);
+                cell.TextLabel.Text = _labelFunc(item);
 #pragma warning disable CA1416
-                var content = cell.DefaultContentConfiguration;
-                content.Text = _labelFunc(item);
-                cell.ContentConfiguration = content;
+                //var config = cell.DefaultContentConfiguration;
+                //config.Text = _labelFunc(item);
+                //cell.ContentConfiguration = config;
 #pragma warning restore CA1416
                 return cell;
             }

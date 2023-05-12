@@ -18,7 +18,7 @@
 		<NeutralLanguage>en</NeutralLanguage>
 		<LangVersion>latest</LangVersion>
 		<GitInfoReportImportance>high</GitInfoReportImportance>
-		<PackageId>AutoSuggestBox</PackageId>
+		<PackageId>MauiAutoSuggestBox</PackageId>
 		<Summary>A control that allows you to design any type of switch/ toggle for .NET MAUI. It's also 100% accessible.</Summary>
 		<Authors>Morten Nielsen</Authors>
 		<Copyright>Morten Nielsen</Copyright>
@@ -45,11 +45,8 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-android|AnyCPU'">
-		<CreatePackage>false</CreatePackage>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
-		<CreatePackage>false</CreatePackage>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-ios'">
+	  <ProvisioningType>manual</ProvisioningType>
 	</PropertyGroup>
 
 	<ItemGroup Condition="$(TargetFramework.StartsWith('net7.0-android')) != true">

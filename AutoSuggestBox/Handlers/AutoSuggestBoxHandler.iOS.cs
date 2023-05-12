@@ -16,25 +16,33 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
     {
         base.ConnectHandler(platformView);
 
-        //UpdateTextColor(platformView);
-        //UpdatePlaceholderText(platformView);
-        //UpdatePlaceholderTextColor(platformView);
-        //UpdateIsEnabled(platformView);
+        PlatformView.Text = VirtualView.Text ?? string.Empty;
+        PlatformView.Frame = new RectangleF(0, 20, 320, 50);
+
+        UpdateTextColor(platformView);
+        UpdatePlaceholderText(platformView);
+        UpdatePlaceholderTextColor(platformView);
+        UpdateDisplayMemberPath(platformView);
+        UpdateIsEnabled(platformView);
+        platformView.UpdateTextOnSelect = VirtualView.UpdateTextOnSelect;
+        platformView.IsSuggestionListOpen = VirtualView.IsSuggestionListOpen;
+
+        UpdateItemsSource(platformView);
 
         platformView.SuggestionChosen += OnPlatformViewSuggestionChosen;
         platformView.TextChanged += OnPlatformViewTextChanged;
         platformView.QuerySubmitted += OnPlatformViewQuerySubmitted;
-        //platformView.UpdateTextOnSelect = e.NewElement.UpdateTextOnSelect;
-        //platformView.IsSuggestionListOpen = e.NewElement.IsSuggestionListOpen;
-        //Control.EditingDidBegin += Control_EditingDidBegin;
-        //Control.EditingDidEnd += Control_EditingDidEnd;
-        //Frame = new RectangleF(0, 20, 320, 40);
+
+        PlatformView.EditingDidBegin += Control_EditingDidBegin;
+        PlatformView.EditingDidEnd += Control_EditingDidEnd;
     }
     protected override void DisconnectHandler(AutoSuggestBoxView platformView)
     {
         platformView.SuggestionChosen -= OnPlatformViewSuggestionChosen;
         platformView.TextChanged -= OnPlatformViewTextChanged;
         platformView.QuerySubmitted -= OnPlatformViewQuerySubmitted;
+        PlatformView.EditingDidBegin -= Control_EditingDidBegin;
+        PlatformView.EditingDidEnd -= Control_EditingDidEnd;
 
         platformView.Dispose();
         base.DisconnectHandler(platformView);
@@ -53,27 +61,37 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
         VirtualView?.RaiseQuerySubmitted(e);
     }
 
-    static readonly int baseHeight = 10;
+    static readonly int baseHeight = 20;
     /// <inheritdoc />
-    //public override SizeRequest GetDesiredSize(double widthConstraint, double heightConstraint)
-    //{
-    //    var baseResult = base.GetDesiredSize(widthConstraint, heightConstraint);
-    //    var testString = new Foundation.NSString("Tj");
-    //    var testSize = testString.GetSizeUsingAttributes(new UIStringAttributes { Font = Control.Font });
-    //    double height = baseHeight + testSize.Height;
-    //    height = Math.Round(height);
+    public override Microsoft.Maui.Graphics.Size GetDesiredSize(double widthConstraint, double heightConstraint)
+    {
+        var baseResult = base.GetDesiredSize(widthConstraint, heightConstraint);
+        var testString = new Foundation.NSString("Tj");
+        var testSize = testString.GetSizeUsingAttributes(new UIStringAttributes { Font = PlatformView.Font });
+        double height = baseHeight + testSize.Height;
+        height = Math.Round(height);
+        if (double.IsInfinity(widthConstraint) || double.IsInfinity(heightConstraint))
+        {
+            // If we drop an infinite value into base.GetDesiredSize for the Editor, we'll
+            // get an exception; it doesn't know what do to with it. So instead we'll size
+            // it to fit its current contents and use those values to replace infinite constraints
 
-    //    return new SizeRequest(new global::Xamarin.Forms.Size(baseResult.Request.Width, height));
-    //}
+            PlatformView.SizeToFit();
+            var sz = new Microsoft.Maui.Graphics.Size(PlatformView.Frame.Width, PlatformView.Frame.Height);
+            return sz;
+        }
 
-    //private void Control_EditingDidBegin(object sender, EventArgs e)
-    //{
-    //    Element?.SetValue(VisualElement.IsFocusedPropertyKey, true);
-    //}
-    //private void Control_EditingDidEnd(object sender, EventArgs e)
-    //{
-    //    Element?.SetValue(VisualElement.IsFocusedPropertyKey, false);
-    //}
+        return base.GetDesiredSize(baseResult.Width, height);
+    }
+
+    void Control_EditingDidBegin(object sender, EventArgs e)
+    {
+        VirtualView.IsFocused = true;
+    }
+    void Control_EditingDidEnd(object sender, EventArgs e)
+    {
+        VirtualView.IsFocused = false;
+    }
 
     public static void MapText(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
     {
@@ -87,7 +105,6 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
     }
     public static void MapPlaceholderText(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
     {
-        //handler.PlatformView.Hint = view.PlaceholderText;
         handler.PlatformView.PlaceholderText = view.PlaceholderText;
     }
     public static void MapPlaceholderTextColor(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
@@ -100,7 +117,7 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
     }
     public static void MapDisplayMemberPath(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
     {
-        handler.PlatformView.SetItems(view?.ItemsSource?.OfType<object>(), (o) => FormatType(o, view?.DisplayMemberPath), (o) => FormatType(o, view?.TextMemberPath));
+        handler.PlatformView.SetItems(view?.ItemsSource?.OfType<object>(), (o) => FormatType(o, view.DisplayMemberPath), (o) => FormatType(o, view.TextMemberPath));
     }
     public static void MapIsSuggestionListOpen(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
     {
@@ -121,19 +138,21 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
 
     private void UpdateTextColor(AutoSuggestBoxView platformView)
     {
-        var color = VirtualView?.TextColor;
-        platformView.SetTextColor(color);
+        platformView.SetTextColor(VirtualView?.TextColor);
+    }
+    private void UpdateDisplayMemberPath(AutoSuggestBoxView platformView)
+    {
+        platformView.SetItems(VirtualView.ItemsSource?.OfType<object>(), (o) => FormatType(o, VirtualView.DisplayMemberPath), (o) => FormatType(o, VirtualView.TextMemberPath));
     }
     private void UpdatePlaceholderTextColor(AutoSuggestBoxView platformView)
     {
-        var placeholderColor = VirtualView?.PlaceholderTextColor;
-        platformView.SetPlaceholderTextColor(placeholderColor);
+        platformView.SetPlaceholderTextColor(VirtualView?.PlaceholderTextColor);
     }
     private void UpdatePlaceholderText(AutoSuggestBoxView platformView) => platformView.PlaceholderText = VirtualView?.PlaceholderText;
 
     private void UpdateIsEnabled(AutoSuggestBoxView platformView)
     {
-        platformView.UserInteractionEnabled = (bool)(VirtualView?.IsEnabled);
+        platformView.UserInteractionEnabled = (bool)(VirtualView.IsEnabled);
     }
 
     private void UpdateItemsSource(AutoSuggestBoxView platformView)
