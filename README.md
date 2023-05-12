@@ -13,7 +13,7 @@ So many thanks to dotMorten for creating this control so long ago.
 
 ## Sponsoring
 
-If you like this library and use it a lot, consider sponsoring me. Anything helps and encourages me to keep going.
+If you like this library and use it a lot, consider sponsoring dotMorten. Anything helps and encourages dotMorten to keep going.
 
 See here for details: https://github.com/sponsors/dotMorten
 
