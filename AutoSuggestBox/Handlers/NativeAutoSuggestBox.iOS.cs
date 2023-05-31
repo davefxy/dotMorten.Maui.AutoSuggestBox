@@ -1,8 +1,6 @@
 ﻿using CoreGraphics;
 using Foundation;
-using Microsoft.Maui.Controls;
 using Microsoft.Maui.Platform;
-using System.Runtime.InteropServices;
 using UIKit;
 
 namespace Maui.AutoSuggestBox.Platforms.iOS
@@ -334,12 +332,11 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
 
                 var item = _items.ElementAt(indexPath.Row);
 
-                cell.TextLabel.Text = _labelFunc(item);
-#pragma warning disable CA1416
-                //var config = cell.DefaultContentConfiguration;
-                //config.Text = _labelFunc(item);
-                //cell.ContentConfiguration = config;
-#pragma warning restore CA1416
+                var content = cell.DefaultContentConfiguration;
+                content.Text = _labelFunc(item);
+                cell.ContentConfiguration = content;
+                cell.AutomaticallyUpdatesContentConfiguration = false;
+
                 return cell;
             }
 
@@ -351,11 +348,6 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
             public override nint RowsInSection(UITableView tableview, nint section)
             {
                 return _items.Count();
-            }
-
-            public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath)
-            {
-                return 30f;
             }
 
             public event EventHandler<TableRowSelectedEventArgs<T>> TableRowSelected;

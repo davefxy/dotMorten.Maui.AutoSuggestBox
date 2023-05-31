@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using Microsoft.Maui.Handlers;
 using Maui.AutoSuggestBox.Platforms.iOS;
-using Microsoft.Maui.Platform;
 using System.Drawing;
 using UIKit;
 
