@@ -31,14 +31,14 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
         /// </summary>
         public AutoSuggestBoxView()
         {
-            InputTextField = new UIKit.UITextField()
+            InputTextField = new UIKit.UITextField
             {
                 TranslatesAutoresizingMaskIntoConstraints = false,
                 BorderStyle = UIKit.UITextBorderStyle.None,
                 ReturnKeyType = UIKit.UIReturnKeyType.Search,
-                AutocorrectionType = UITextAutocorrectionType.No
+                AutocorrectionType = UITextAutocorrectionType.No,
+                ShouldReturn = InputText_OnShouldReturn
             };
-            InputTextField.ShouldReturn = InputText_OnShouldReturn;
             InputTextField.EditingDidBegin += OnEditingDidBegin;
             InputTextField.EditingDidEnd += OnEditingDidEnd;
             InputTextField.EditingChanged += InputText_EditingChanged;

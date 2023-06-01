@@ -18,8 +18,8 @@
 		<NeutralLanguage>en</NeutralLanguage>
 		<LangVersion>latest</LangVersion>
 		<GitInfoReportImportance>high</GitInfoReportImportance>
-		<PackageId>MauiAutoSuggestBox</PackageId>
-		<Summary>A control that allows you to design any type of switch/ toggle for .NET MAUI. It's also 100% accessible.</Summary>
+		<PackageId>Maui.AutoSuggestBox</PackageId>
+		<Summary>Use an AutoSuggestBox to provide a list of suggestions for a user to select from as they type.</Summary>
 		<Authors>Morten Nielsen</Authors>
 		<Copyright>Morten Nielsen</Copyright>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>

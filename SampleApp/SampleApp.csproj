@@ -56,7 +56,7 @@
 	  <EmbeddedResource Include="Data\USCities.txt" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\AutoSuggestBox\Maui.AutoSuggestBox.csproj" />
@@ -64,7 +64,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Data\" />
-	  <Folder Include="Views\" />
 	</ItemGroup>
 
 	<ItemGroup>
