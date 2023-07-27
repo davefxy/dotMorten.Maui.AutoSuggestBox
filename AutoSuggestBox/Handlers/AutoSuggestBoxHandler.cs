@@ -15,7 +15,7 @@ namespace Maui.AutoSuggestBox.Handlers;
 public partial class AutoSuggestBoxHandler
 {
     public static IPropertyMapper<IAutoSuggestBox, AutoSuggestBoxHandler> PropertyMapper =
-        new PropertyMapper<IAutoSuggestBox, AutoSuggestBoxHandler>(ViewMapper)
+                                new PropertyMapper<IAutoSuggestBox, AutoSuggestBoxHandler>(ViewMapper)
         {
             [nameof(IAutoSuggestBox.Text)] = MapText,
             [nameof(IAutoSuggestBox.TextColor)] = MapTextColor,

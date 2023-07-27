@@ -17,6 +17,8 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
         platformView.TextChanged += OnPlatformViewTextChanged;
         platformView.QuerySubmitted += OnPlatformViewQuerySubmitted;
         platformView.SetTextColor(VirtualView?.TextColor.ToPlatform() ?? VirtualView.TextColor.ToPlatform());
+        UpdateTextColor(platformView);
+        UpdatePlaceholderText(platformView);
     }
     protected override void DisconnectHandler(AutoSuggestBoxView platformView)
     {
