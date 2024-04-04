@@ -36,21 +36,18 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
 
     private void OnPlatformViewSuggestionChosen(object? sender, XAutoSuggestBoxSuggestionChosenEventArgs e)
     {
-        AutoSuggestBoxSuggestionChosenEventArgs args = new AutoSuggestBoxSuggestionChosenEventArgs(e.SelectedItem);
-        VirtualView?.RaiseSuggestionChosen(args);
+        VirtualView?.RaiseSuggestionChosen(e.SelectedItem);
     }
     private void OnPlatformViewTextChanged(object? sender, XAutoSuggestBoxTextChangedEventArgs e)
     {
-        if (e.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+        if (sender != null && e.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
         {
-            AutoSuggestBoxTextChangedEventArgs args = new AutoSuggestBoxTextChangedEventArgs(((AutoSuggestBoxView)sender).Text, AutoSuggestBoxTextChangeReason.UserInput);
-            VirtualView?.NativeControlTextChanged(args);
+            VirtualView?.NativeControlTextChanged(PlatformView.Text, (AutoSuggestBoxTextChangeReason)e.Reason);
         }
     }
     private void OnPlatformViewQuerySubmitted(object? sender, XAutoSuggestBoxQuerySubmittedEventArgs e)
     {
-        AutoSuggestBoxQuerySubmittedEventArgs args = new AutoSuggestBoxQuerySubmittedEventArgs(e.QueryText, e.ChosenSuggestion);
-        VirtualView?.RaiseQuerySubmitted(args);
+       VirtualView?.RaiseQuerySubmitted(e.QueryText, e.ChosenSuggestion);
     }
     public static void MapText(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
     {
