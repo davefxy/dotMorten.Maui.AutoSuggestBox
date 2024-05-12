@@ -37,16 +37,8 @@
 		<PackageTags>Maui dotnet.Maui .net-Maui AutoSuggestBox uikit TextInputLayout</PackageTags>
 		<Configurations>Debug;Release</Configurations>
 		<PackOnBuild>true</PackOnBuild>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<None Include="README.md">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-	</ItemGroup>
 	
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<WarningLevel>4</WarningLevel>
