@@ -1,7 +1,11 @@
-﻿using CoreGraphics;
+﻿#if __IOS__ || __MACCATALYST__
+#nullable enable
+using CoreGraphics;
 using Foundation;
-using Microsoft.Maui.Platform;
 using UIKit;
+using Microsoft.Maui.Platform;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace Maui.AutoSuggestBox.Platforms.iOS
 {
@@ -11,9 +15,9 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
     public partial class AutoSuggestBoxView : UIKit.UIView
     {
         private nfloat keyboardHeight;
-        private NSLayoutConstraint bottomConstraint;
-        private Func<object, string> textFunc;
-        private CoreAnimation.CALayer border;
+        private NSLayoutConstraint? bottomConstraint;
+        private Func<object, string?>? textFunc;
+        private CoreAnimation.CALayer? border;
         private bool showBottomBorder = true;
 
         /// <summary>
@@ -31,14 +35,14 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
         /// </summary>
         public AutoSuggestBoxView()
         {
-            InputTextField = new UIKit.UITextField
+            InputTextField = new UIKit.UITextField()
             {
                 TranslatesAutoresizingMaskIntoConstraints = false,
                 BorderStyle = UIKit.UITextBorderStyle.None,
                 ReturnKeyType = UIKit.UIReturnKeyType.Search,
-                AutocorrectionType = UITextAutocorrectionType.No,
-                ShouldReturn = InputText_OnShouldReturn
+                AutocorrectionType = UITextAutocorrectionType.No
             };
+            InputTextField.ShouldReturn = InputText_OnShouldReturn;
             InputTextField.EditingDidBegin += OnEditingDidBegin;
             InputTextField.EditingDidEnd += OnEditingDidEnd;
             InputTextField.EditingChanged += InputText_EditingChanged;
@@ -55,27 +59,29 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
         }
 
         /// <inheritdoc />
+        public override CGSize SizeThatFits(CGSize size) => InputTextField.SizeThatFits(size);
+        /// <inheritdoc />
         public override void MovedToWindow()
         {
             base.MovedToWindow();
             UpdateSuggestionListOpenState();
         }
 
-        private void OnEditingDidBegin(object sender, EventArgs e)
+        private void OnEditingDidBegin(object? sender, EventArgs e)
         {
             IsSuggestionListOpen = true;
             EditingDidBegin?.Invoke(this, e);
         }
 
-        private void OnEditingDidEnd(object sender, EventArgs e)
+        private void OnEditingDidEnd(object? sender, EventArgs e)
         {
             IsSuggestionListOpen = false;
             EditingDidEnd?.Invoke(this, e);
         }
 
-        internal EventHandler EditingDidBegin;
+        internal EventHandler? EditingDidBegin;
 
-        internal EventHandler EditingDidEnd;
+        internal EventHandler? EditingDidEnd;
 
         /// <inheritdoc />
         public override void LayoutSubviews()
@@ -112,13 +118,13 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
         /// <summary>
         /// Gets or sets the font of the <see cref="InputTextField"/>
         /// </summary>
-        public virtual UIFont Font
+        public virtual UIFont? Font
         {
             get => InputTextField.Font;
             set => InputTextField.Font = value;
         }
 
-        internal void SetItems(IEnumerable<object> items, Func<object, string> labelFunc, Func<object, string> textFunc)
+        internal void SetItems(IEnumerable<object>? items, Func<object, string?> labelFunc, Func<object, string?> textFunc)
         {
             this.textFunc = textFunc;
             if (SelectionList.Source is TableSource<object> oldSource)
@@ -127,7 +133,7 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
             }
             SelectionList.Source = null;
 
-            IEnumerable<object> suggestions = items?.OfType<object>();
+            IEnumerable<object>? suggestions = items?.OfType<object>();
             if (suggestions != null && suggestions.Any())
             {
                 var suggestionTableSource = new TableSource<object>(suggestions, labelFunc);
@@ -145,7 +151,7 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
         /// <summary>
         /// Gets or sets the placeholder text to be displayed in the <see cref="InputTextField"/>.
         /// </summary>
-        public virtual string PlaceholderText
+        public virtual string? PlaceholderText
         {
             get => InputTextField.Placeholder;
             set => InputTextField.Placeholder = value;
@@ -158,7 +164,7 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
         public virtual void SetPlaceholderTextColor(Color color)
         {
             // See https://github.com/xamarin/Xamarin.Forms/blob/4d9a5bf3706778770026a18ae81a7dd5c4c15db4/Xamarin.Forms.Platform.iOS/Renderers/EntryRenderer.cs#L260
-            InputTextField.AttributedPlaceholder = new NSAttributedString(InputTextField.Placeholder ?? string.Empty, null, color.ToPlatform()); //ColorExtensions.ToColor(color));
+            InputTextField.AttributedPlaceholder = new NSAttributedString(InputTextField.Placeholder ?? string.Empty, null, ColorExtensions.ToPlatform(color));
         }
 
         private bool _isSuggestionListOpen;
@@ -192,7 +198,7 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
                 SelectionList.TopAnchor.ConstraintEqualTo(InputTextField.BottomAnchor).Active = true;
                 SelectionList.LeftAnchor.ConstraintEqualTo(InputTextField.LeftAnchor).Active = true;
                 SelectionList.WidthAnchor.ConstraintEqualTo(InputTextField.WidthAnchor).Active = true;
-                bottomConstraint = SelectionList.BottomAnchor.ConstraintGreaterThanOrEqualTo(SelectionList.Superview.BottomAnchor, -keyboardHeight);
+                bottomConstraint = SelectionList.BottomAnchor.ConstraintGreaterThanOrEqualTo(SelectionList.Superview!.BottomAnchor, -keyboardHeight);
                 bottomConstraint.Active = true;
                 SelectionList.UpdateConstraints();
             }
@@ -208,7 +214,7 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
         /// </summary>
         public virtual bool UpdateTextOnSelect { get; set; } = true;
 
-        private void OnKeyboardHide(object sender, UIKeyboardEventArgs e)
+        private void OnKeyboardHide(object? sender, UIKeyboardEventArgs e)
         {
             keyboardHeight = 0;
             if (bottomConstraint != null)
@@ -218,16 +224,37 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
             }
         }
 
-        private void OnKeyboardShow(object sender, UIKeyboardEventArgs e)
+        private void OnKeyboardShow(object? sender, UIKeyboardEventArgs e)
         {
-            NSValue nsKeyboardBounds = (NSValue)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameBeginUserInfoKey);
-            var keyboardBounds = nsKeyboardBounds.RectangleFValue;
-            keyboardHeight = keyboardBounds.Height;
+            CGRect? keyboardEndFrame = DescriptionToCGRect(e.Notification.UserInfo?.ValueForKey(UIKeyboard.FrameEndUserInfoKey).Description);
+            if (keyboardEndFrame is null)
+                return;
+            NFloat _keyboardHeight = UIDevice.CurrentDevice.Orientation == UIDeviceOrientation.Portrait || UIDevice.CurrentDevice.Orientation == UIDeviceOrientation.PortraitUpsideDown ? keyboardEndFrame.Value.Size.Height : keyboardEndFrame.Value.Size.Width;
             if (bottomConstraint != null)
             {
                 bottomConstraint.Constant = -keyboardHeight;
                 SelectionList.UpdateConstraints();
             }
+        }
+        // Used to get the numeric values from the UserInfo dictionary's NSObject value to CGRect.
+        // Doing manually since CGRectFromString is not yet bound
+        static CGRect? DescriptionToCGRect(string? description)
+        {
+            // example of passed in description: "NSRect: {{0, 586}, {430, 346}}"
+            if (description is null)
+                return null;
+            // remove everything except for numbers and commas
+            var temp = MyRegex().Replace(description, "");
+            var dimensions = temp.Split(',');
+            if (dimensions.Length == 4
+                && nfloat.TryParse(dimensions[0], out var x)
+                && nfloat.TryParse(dimensions[1], out var y)
+                && nfloat.TryParse(dimensions[2], out var width)
+                && nfloat.TryParse(dimensions[3], out var height))
+            {
+                return new CGRect(x, y, width, height);
+            }
+            return null;
         }
 
         private bool InputText_OnShouldReturn(UITextField field)
@@ -253,36 +280,36 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
         /// <inheritdoc />
         public override bool IsFirstResponder => InputTextField.IsFirstResponder;
 
-        private void SuggestionTableSource_TableRowSelected(object sender, TableRowSelectedEventArgs<object> e)
+        private void SuggestionTableSource_TableRowSelected(object? sender, TableRowSelectedEventArgs<object> e)
         {
             SelectionList.DeselectRow(e.SelectedItemIndexPath, false);
             var selection = e.SelectedItem;
             if (UpdateTextOnSelect)
             {
-                InputTextField.Text = textFunc(selection);
-                TextChanged?.Invoke(this, new AutoSuggestBoxTextChangedEventArgs(textFunc(selection), AutoSuggestBoxTextChangeReason.SuggestionChosen));
+                InputTextField.Text = textFunc is null ? null : textFunc(selection);
+                TextChanged?.Invoke(this, new AutoSuggestBoxTextChangedEventArgs(AutoSuggestBoxTextChangeReason.SuggestionChosen));
             }
             SuggestionChosen?.Invoke(this, new AutoSuggestBoxSuggestionChosenEventArgs(selection));
             QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(Text, selection));
             IsSuggestionListOpen = false;
         }
 
-        private void InputText_EditingChanged(object sender, EventArgs e)
+        private void InputText_EditingChanged(object? sender, EventArgs e)
         {
-            TextChanged?.Invoke(this, new AutoSuggestBoxTextChangedEventArgs(this.Text, AutoSuggestBoxTextChangeReason.UserInput));
+            TextChanged?.Invoke(this, new AutoSuggestBoxTextChangedEventArgs(AutoSuggestBoxTextChangeReason.UserInput));
             IsSuggestionListOpen = true;
         }
 
         /// <summary>
         /// Gets or sets the text displayed in the <see cref="InputTextField"/>
         /// </summary>
-        public virtual string Text
+        public virtual string? Text
         {
             get => InputTextField.Text;
             set
             {
                 InputTextField.Text = value;
-                this.TextChanged?.Invoke(this, new AutoSuggestBoxTextChangedEventArgs(value, AutoSuggestBoxTextChangeReason.ProgrammaticChange));
+                this.TextChanged?.Invoke(this, new AutoSuggestBoxTextChangedEventArgs(AutoSuggestBoxTextChangeReason.ProgrammaticChange));
             }
         }
 
@@ -292,32 +319,31 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
         /// <param name="color">color</param>
         public virtual void SetTextColor(Color color)
         {
-            //InputTextField.TextColor = ColorExtensions.ToColor(color);
-            InputTextField.TextColor = color.ToPlatform();
+            InputTextField.TextColor = ColorExtensions.ToPlatform(color);
         }
 
         /// <summary>
-        /// Raised after the text config of the editable control component is updated.
+        /// Raised after the text content of the editable control component is updated.
         /// </summary>
-        public event EventHandler<AutoSuggestBoxTextChangedEventArgs> TextChanged;
+        public event EventHandler<AutoSuggestBoxTextChangedEventArgs>? TextChanged;
 
         /// <summary>
         /// Occurs when the user submits a search query.
         /// </summary>
-        public event EventHandler<AutoSuggestBoxQuerySubmittedEventArgs> QuerySubmitted;
+        public event EventHandler<AutoSuggestBoxQuerySubmittedEventArgs>? QuerySubmitted;
 
         /// <summary>
-        /// Raised before the text config of the editable control component is updated.
+        /// Raised before the text content of the editable control component is updated.
         /// </summary>
-        public event EventHandler<AutoSuggestBoxSuggestionChosenEventArgs> SuggestionChosen;
+        public event EventHandler<AutoSuggestBoxSuggestionChosenEventArgs>? SuggestionChosen;
 
         private class TableSource<T> : UITableViewSource
         {
             readonly IEnumerable<T> _items;
-            readonly Func<T, string> _labelFunc;
+            readonly Func<T, string?> _labelFunc;
             readonly string _cellIdentifier;
 
-            public TableSource(IEnumerable<T> items, Func<T, string> labelFunc)
+            public TableSource(IEnumerable<T> items, Func<T, string?> labelFunc)
             {
                 _items = items;
                 _labelFunc = labelFunc;
@@ -327,15 +353,11 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
             public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
             {
                 var cell = tableView.DequeueReusableCell(_cellIdentifier);
-                if (cell == null)
-                    cell = new UITableViewCell(UITableViewCellStyle.Default, _cellIdentifier);
+                cell ??= new UITableViewCell(UITableViewCellStyle.Default, _cellIdentifier);
 
                 var item = _items.ElementAt(indexPath.Row);
 
-                var content = cell.DefaultContentConfiguration;
-                content.Text = _labelFunc(item);
-                cell.ContentConfiguration = content;
-                cell.AutomaticallyUpdatesContentConfiguration = false;
+                cell.TextLabel.Text = _labelFunc(item);
 
                 return cell;
             }
@@ -350,7 +372,11 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
                 return _items.Count();
             }
 
-            public event EventHandler<TableRowSelectedEventArgs<T>> TableRowSelected;
+            public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath)
+            {
+                return 30f;
+            }
+            public event EventHandler<TableRowSelectedEventArgs<T>>? TableRowSelected;
 
             private void OnTableRowSelected(NSIndexPath itemIndexPath)
             {
@@ -362,7 +388,7 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
 
         private class TableRowSelectedEventArgs<T> : EventArgs
         {
-            public TableRowSelectedEventArgs(T selectedItem, string selectedItemLabel, NSIndexPath selectedItemIndexPath)
+            public TableRowSelectedEventArgs(T selectedItem, string? selectedItemLabel, NSIndexPath selectedItemIndexPath)
             {
                 SelectedItem = selectedItem;
                 SelectedItemLabel = selectedItemLabel;
@@ -370,8 +396,13 @@ namespace Maui.AutoSuggestBox.Platforms.iOS
             }
 
             public T SelectedItem { get; }
-            public string SelectedItemLabel { get; }
+            public string? SelectedItemLabel { get; }
             public NSIndexPath SelectedItemIndexPath { get; }
         }
+
+        [GeneratedRegex(@"[^0-9,]")]
+        private static partial Regex MyRegex();
     }
 }
+
+#endif

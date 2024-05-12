@@ -12,7 +12,7 @@ public interface IAutoSuggestBox : IView
     bool UpdateTextOnSelect { get; set; }
     System.Collections.IList ItemsSource { get; set; }
 
-    void RaiseSuggestionChosen(AutoSuggestBoxSuggestionChosenEventArgs e);
-    void NativeControlTextChanged(AutoSuggestBoxTextChangedEventArgs e);
-    void RaiseQuerySubmitted(AutoSuggestBoxQuerySubmittedEventArgs e);
+    void SuggestionChosen(object selectedItem);
+    void NativeControlTextChanged(string? text, AutoSuggestBoxTextChangeReason reason);
+    void RaiseQuerySubmitted(string? queryText, object? chosenSuggestion);
 }

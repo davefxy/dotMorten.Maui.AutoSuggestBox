@@ -37,30 +37,28 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
     }
     protected override void DisconnectHandler(AutoSuggestBoxView platformView)
     {
+        base.DisconnectHandler(platformView);
         platformView.SuggestionChosen -= OnPlatformViewSuggestionChosen;
         platformView.TextChanged -= OnPlatformViewTextChanged;
         platformView.QuerySubmitted -= OnPlatformViewQuerySubmitted;
         PlatformView.EditingDidBegin -= Control_EditingDidBegin;
         PlatformView.EditingDidEnd -= Control_EditingDidEnd;
-
-        platformView.Dispose();
-        base.DisconnectHandler(platformView);
     }
 
     private void OnPlatformViewSuggestionChosen(object? sender, AutoSuggestBoxSuggestionChosenEventArgs e)
     {
-        VirtualView?.RaiseSuggestionChosen(e);
+        VirtualView?.SuggestionChosen(e.SelectedItem);
     }
     private void OnPlatformViewTextChanged(object? sender, AutoSuggestBoxTextChangedEventArgs e)
     {
-        VirtualView?.NativeControlTextChanged(e);
+        VirtualView?.NativeControlTextChanged(PlatformView.Text, (AutoSuggestBoxTextChangeReason)e.Reason);
     }
     private void OnPlatformViewQuerySubmitted(object? sender, AutoSuggestBoxQuerySubmittedEventArgs e)
     {
-        VirtualView?.RaiseQuerySubmitted(e);
+        VirtualView?.RaiseQuerySubmitted(e.QueryText, e.ChosenSuggestion);
     }
 
-    static readonly int baseHeight = 20;
+    static readonly int baseHeight = 10;
     /// <inheritdoc />
     public override Microsoft.Maui.Graphics.Size GetDesiredSize(double widthConstraint, double heightConstraint)
     {

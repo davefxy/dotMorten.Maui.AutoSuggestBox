@@ -1,21 +1,15 @@
-﻿#if ANDROID
-using PlatformView = Maui.AutoSuggestBox.Platforms.Android.AutoSuggestBoxView;
-#elif IOS
-using PlatformView = Maui.AutoSuggestBox.Platforms.iOS.AutoSuggestBoxView;
-#elif (NETSTANDARD || !PLATFORM) || (NET6_0_OR_GREATER && !IOS && !ANDROID)
-using PlatformView = System.Object;
-#endif
-using Microsoft.Maui.Handlers;
-
-namespace Maui.AutoSuggestBox.Handlers;
+﻿namespace Maui.AutoSuggestBox.Handlers;
 
 /// <summary>
-/// AutoSuggestBox handler
+/// Platform specific renderer for the <see cref="AutoSuggestBox"/>
 /// </summary>
 public partial class AutoSuggestBoxHandler
 {
+    /// <summary>
+    /// Property mapper for the <see cref="AutoSuggestBox"/> control.
+    /// </summary>
     public static IPropertyMapper<IAutoSuggestBox, AutoSuggestBoxHandler> PropertyMapper =
-                                new PropertyMapper<IAutoSuggestBox, AutoSuggestBoxHandler>(ViewMapper)
+        new PropertyMapper<IAutoSuggestBox, AutoSuggestBoxHandler>(ViewMapper)
         {
             [nameof(IAutoSuggestBox.Text)] = MapText,
             [nameof(IAutoSuggestBox.TextColor)] = MapTextColor,
@@ -23,10 +17,10 @@ public partial class AutoSuggestBoxHandler
             [nameof(IAutoSuggestBox.PlaceholderTextColor)] = MapPlaceholderTextColor,
             [nameof(IAutoSuggestBox.TextMemberPath)] = MapTextMemberPath,
             [nameof(IAutoSuggestBox.DisplayMemberPath)] = MapDisplayMemberPath,
-            [nameof(IAutoSuggestBox.IsEnabled)] = MapIsEnabled,
-            [nameof(IAutoSuggestBox.ItemsSource)] = MapItemsSource,
-            [nameof(IAutoSuggestBox.UpdateTextOnSelect)] = MapUpdateTextOnSelect,
             [nameof(IAutoSuggestBox.IsSuggestionListOpen)] = MapIsSuggestionListOpen,
+            [nameof(IAutoSuggestBox.UpdateTextOnSelect)] = MapUpdateTextOnSelect,
+            [nameof(IAutoSuggestBox.ItemsSource)] = MapItemsSource,
+            [nameof(IAutoSuggestBox.IsEnabled)] = MapIsEnabled,
         };
 
     /// <summary>

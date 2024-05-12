@@ -8,25 +8,20 @@ namespace Maui.AutoSuggestBox
     {
         private bool suppressTextChangedEvent;
 
-        readonly WeakEventManager querySubmittedEventManager = new();
-        public readonly WeakEventManager textChangedEventManager = new();
-        readonly WeakEventManager suggestionChosenEventManager = new();
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoSuggestBox"/> class
         /// </summary>
         public AutoSuggestBox()
         {
-            //Unloaded += OnAutoSuggestBoxUnloaded;
         }
 
         /// <summary>
         /// Gets or sets the Text property
         /// </summary>
         /// <seealso cref="TextColor"/>
-        public string Text
+        public string? Text
         {
-            get { return (string)GetValue(TextProperty); }
+            get { return GetValue(TextProperty) as string; }
             set { SetValue(TextProperty, value); }
         }
 
@@ -36,22 +31,12 @@ namespace Maui.AutoSuggestBox
         public static readonly BindableProperty TextProperty =
             BindableProperty.Create(nameof(Text), typeof(string), typeof(AutoSuggestBox), "", BindingMode.OneWay, null, OnTextPropertyChanged);
 
-        /// <summary>
-        /// This command is invoked whenever the text on <see cref="AutoSuggestBox"/> has changed.
-        /// Note that this is fired after the tap or click is lifted.
-        /// This is a bindable property.
-        /// </summary>
-        public ICommand? TextChangedCommand
-        {
-            get => (ICommand?)GetValue(TextChangedCommandProperty);
-            set => SetValue(TextChangedCommandProperty, value);
-        }
 
         private static void OnTextPropertyChanged(BindableObject bindable, object oldValue, object newValue)
         {
             var box = (AutoSuggestBox)bindable;
             if (!box.suppressTextChangedEvent) //Ensure this property changed didn't get call because we were updating it from the native text property
-                box.textChangedEventManager.HandleEvent(box, new AutoSuggestBoxTextChangedEventArgs("", AutoSuggestBoxTextChangeReason.ProgrammaticChange), nameof(TextChanged));
+                box.TextChanged?.Invoke(box, new AutoSuggestBoxTextChangedEventArgs(AutoSuggestBoxTextChangeReason.ProgrammaticChange));
         }
 
         /// <summary>
@@ -74,9 +59,9 @@ namespace Maui.AutoSuggestBox
         /// Gets or sets the PlaceholderText
         /// </summary>
         /// <seealso cref="PlaceholderTextColor"/>
-        public string PlaceholderText
+        public string? PlaceholderText
         {
-            get { return (string)GetValue(PlaceholderTextProperty); }
+            get { return GetValue(PlaceholderTextProperty) as string; }
             set { SetValue(PlaceholderTextProperty, value); }
         }
 
@@ -110,9 +95,9 @@ namespace Maui.AutoSuggestBox
         /// The property path that is used to get the value for display in the text box portion
         /// of the AutoSuggestBox control, when an item is selected.
         /// </value>
-        public string TextMemberPath
+        public string? TextMemberPath
         {
-            get { return (string)GetValue(TextMemberPathProperty); }
+            get { return GetValue(TextMemberPathProperty) as string; }
             set { SetValue(TextMemberPathProperty, value); }
         }
 
@@ -129,9 +114,9 @@ namespace Maui.AutoSuggestBox
         /// The name or path of the property that is displayed for each the data item in
         /// the control. The default is an empty string ("").
         /// </value>
-        public string DisplayMemberPath
+        public string? DisplayMemberPath
         {
-            get { return (string)GetValue(DisplayMemberPathProperty); }
+            get { return GetValue(DisplayMemberPathProperty) as string; }
             set { SetValue(DisplayMemberPathProperty, value); }
         }
 
@@ -179,7 +164,7 @@ namespace Maui.AutoSuggestBox
         /// Gets or sets the header object for the text box portion of this control.
         /// </summary>
         /// <value>The header object for the text box portion of this control.</value>
-        public System.Collections.IList ItemsSource
+        public System.Collections.IList? ItemsSource
         {
             get { return GetValue(ItemsSourceProperty) as System.Collections.IList; }
             set { SetValue(ItemsSourceProperty, value); }
@@ -191,66 +176,41 @@ namespace Maui.AutoSuggestBox
         public static readonly BindableProperty ItemsSourceProperty =
             BindableProperty.Create(nameof(ItemsSource), typeof(System.Collections.IList), typeof(AutoSuggestBox), null, BindingMode.OneWay, null, null);
 
-        /// <summary>
-        /// Backing BindableProperty for the <see cref="TextChangedCommand"/> property.
-        /// </summary>
-        public static readonly BindableProperty TextChangedCommandProperty = BindableProperty.Create(nameof(TextChangedCommand), typeof(ICommand), typeof(AutoSuggestBox));
-
-        public event EventHandler<AutoSuggestBoxSuggestionChosenEventArgs> SuggestionChosen
+        void IAutoSuggestBox.SuggestionChosen(object selectedItem)
         {
-            add => suggestionChosenEventManager.AddEventHandler(value);
-            remove => suggestionChosenEventManager.RemoveEventHandler(value);
-        }
-        public void RaiseSuggestionChosen(AutoSuggestBoxSuggestionChosenEventArgs args)
-        {
-            suggestionChosenEventManager.HandleEvent(this, args, nameof(SuggestionChosen));
+            SuggestionChosen?.Invoke(this, new AutoSuggestBoxSuggestionChosenEventArgs(selectedItem));
         }
 
         /// <summary>
         /// Raised before the text content of the editable control component is updated.
         /// </summary>
-        public event EventHandler<AutoSuggestBoxTextChangedEventArgs> TextChanged
-        {
-            add => textChangedEventManager.AddEventHandler(value);
-            remove => textChangedEventManager.RemoveEventHandler(value);
-        }
+        public event EventHandler<AutoSuggestBoxSuggestionChosenEventArgs>? SuggestionChosen;
 
         // Called by the native control when users enter text
-        public void NativeControlTextChanged(AutoSuggestBoxTextChangedEventArgs args)
+        void IAutoSuggestBox.NativeControlTextChanged(string? text, AutoSuggestBoxTextChangeReason reason)
         {
             suppressTextChangedEvent = true; //prevent loop of events raising, as setting this property will make it back into the native control
-            Text = args.Text;
+            Text = text;
             suppressTextChangedEvent = false;
-            textChangedEventManager.HandleEvent(this, args, nameof(TextChanged));
-
-            //if (TextChangedCommand?.CanExecute(args.Text) ?? false)
-            //{
-            //    TextChangedCommand.Execute(args.Text);
-            //}
+            TextChanged?.Invoke(this, new AutoSuggestBoxTextChangedEventArgs(reason));
         }
 
         /// <summary>
         /// Raised after the text content of the editable control component is updated.
         /// </summary>
-        public void RaiseQuerySubmitted(AutoSuggestBoxQuerySubmittedEventArgs args)
+
+        public event EventHandler<AutoSuggestBoxTextChangedEventArgs>? TextChanged;
+
+        void IAutoSuggestBox.RaiseQuerySubmitted(string? queryText, object? chosenSuggestion)
         {
-            querySubmittedEventManager.HandleEvent(this, args, nameof(QuerySubmitted));
+            QuerySubmitted?.Invoke(this, new AutoSuggestBoxQuerySubmittedEventArgs(queryText, chosenSuggestion));
         }
 
         /// <summary>
-        /// Executes QuerySubmitted event
         /// Occurs when the user submits a search query.
         /// </summary>
-        public event EventHandler<AutoSuggestBoxQuerySubmittedEventArgs> QuerySubmitted
-        {
-            add => querySubmittedEventManager.AddEventHandler(value);
-            remove => querySubmittedEventManager.RemoveEventHandler(value);
-        }
 
-        //void OnAutoSuggestBoxUnloaded(object? sender, EventArgs e)
-        //{
-        //    Unloaded -= OnAutoSuggestBoxUnloaded;
-        //    Handler?.DisconnectHandler();
-        //}
+        public event EventHandler<AutoSuggestBoxQuerySubmittedEventArgs>? QuerySubmitted;
+
     }
 }

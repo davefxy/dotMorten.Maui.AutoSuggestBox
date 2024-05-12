@@ -5,7 +5,6 @@ using AutoSuggestBoxView = Microsoft.UI.Xaml.Controls.AutoSuggestBox;
 using XAutoSuggestBoxSuggestionChosenEventArgs = Microsoft.UI.Xaml.Controls.AutoSuggestBoxSuggestionChosenEventArgs;
 using XAutoSuggestBoxTextChangedEventArgs = Microsoft.UI.Xaml.Controls.AutoSuggestBoxTextChangedEventArgs;
 using XAutoSuggestBoxQuerySubmittedEventArgs = Microsoft.UI.Xaml.Controls.AutoSuggestBoxQuerySubmittedEventArgs;
-using Microsoft.Maui.Controls;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Maui.AutoSuggestBox.Handlers;
@@ -20,23 +19,29 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
         platformView.SuggestionChosen += OnPlatformViewSuggestionChosen;
         platformView.TextChanged += OnPlatformViewTextChanged;
         platformView.QuerySubmitted += OnPlatformViewQuerySubmitted;
-        UpdateTextMemberPath(platformView);
         platformView.GotFocus += PlatformView_GotFocus;
+        platformView.Loaded += PlatformView_Loaded;
     }
+
     protected override void DisconnectHandler(AutoSuggestBoxView platformView)
     {
+        base.DisconnectHandler(platformView);
         platformView.SuggestionChosen -= OnPlatformViewSuggestionChosen;
         platformView.TextChanged -= OnPlatformViewTextChanged;
         platformView.QuerySubmitted -= OnPlatformViewQuerySubmitted;
         platformView.GotFocus -= PlatformView_GotFocus;
-
-        //platformView.Dispose();
-        base.DisconnectHandler(platformView);
+        platformView.Loaded -= PlatformView_Loaded;
+    }
+    private void PlatformView_Loaded(object? sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        // Workaround issue in WinUI where the list doesn't open if you set before load
+        if (VirtualView.IsSuggestionListOpen && sender is AutoSuggestBoxView box)
+            box.IsSuggestionListOpen = true;
     }
 
     private void OnPlatformViewSuggestionChosen(object? sender, XAutoSuggestBoxSuggestionChosenEventArgs e)
     {
-        VirtualView?.RaiseSuggestionChosen(e.SelectedItem);
+        VirtualView?.SuggestionChosen(e.SelectedItem);
     }
     private void OnPlatformViewTextChanged(object? sender, XAutoSuggestBoxTextChangedEventArgs e)
     {
@@ -47,7 +52,7 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
     }
     private void OnPlatformViewQuerySubmitted(object? sender, XAutoSuggestBoxQuerySubmittedEventArgs e)
     {
-       VirtualView?.RaiseQuerySubmitted(e.QueryText, e.ChosenSuggestion);
+        VirtualView?.RaiseQuerySubmitted(e.QueryText, e.ChosenSuggestion);
     }
     public static void MapText(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
     {
@@ -57,8 +62,9 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
 
     public static void MapTextColor(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
     {
-        var color = view?.TextColor;
-        handler.PlatformView.Foreground = color.ToPlatform();
+        Color? color = view?.TextColor;
+        if (color != null)
+            handler.PlatformView.Foreground = color.ToPlatform();
     }
     public static void MapPlaceholderText(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
     {
@@ -104,8 +110,9 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
 
     private void UpdateTextColor(AutoSuggestBoxView platformView)
     {
-        var color = VirtualView?.TextColor;
-        platformView.Foreground = color.ToPlatform();
+        Color? color = VirtualView?.TextColor;
+        if (color != null)
+            platformView.Foreground = color.ToPlatform();
     }
     private void UpdateDisplayMemberPath(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
     {

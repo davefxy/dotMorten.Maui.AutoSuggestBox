@@ -9,12 +9,11 @@
         /// Initializes a new instance of the <see cref="AutoSuggestBoxTextChangedEventArgs"/> class.
         /// </summary>
         /// <param name="reason"></param>
-        internal AutoSuggestBoxTextChangedEventArgs(string text,AutoSuggestBoxTextChangeReason reason)
+        internal AutoSuggestBoxTextChangedEventArgs(AutoSuggestBoxTextChangeReason reason)
         {
-            Text = text;
             Reason = reason;
         }
-        public string Text { get; }
+
         /// <summary>
         /// Returns a Boolean value indicating if the current value of the TextBox is unchanged from the point in time when the TextChanged event was raised.
         /// </summary>

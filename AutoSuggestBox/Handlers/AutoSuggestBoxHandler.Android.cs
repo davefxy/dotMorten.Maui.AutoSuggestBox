@@ -8,7 +8,6 @@ namespace Maui.AutoSuggestBox.Handlers;
 public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSuggestBoxView>
 {
     /// <inheritdoc />
-    //protected override AutoSuggestBoxView CreatePlatformView() => new AutoSuggestBoxView(Context);
     protected override AutoSuggestBoxView CreatePlatformView() => new(Context);
     protected override void ConnectHandler(AutoSuggestBoxView platformView)
     {
@@ -17,30 +16,26 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
         platformView.TextChanged += OnPlatformViewTextChanged;
         platformView.QuerySubmitted += OnPlatformViewQuerySubmitted;
         platformView.SetTextColor(VirtualView?.TextColor.ToPlatform() ?? VirtualView.TextColor.ToPlatform());
-        UpdateTextColor(platformView);
-        UpdatePlaceholderText(platformView);
     }
     protected override void DisconnectHandler(AutoSuggestBoxView platformView)
     {
+        base.DisconnectHandler(platformView);
         platformView.SuggestionChosen -= OnPlatformViewSuggestionChosen;
         platformView.TextChanged -= OnPlatformViewTextChanged;
         platformView.QuerySubmitted -= OnPlatformViewQuerySubmitted;
-
-        platformView.Dispose();
-        base.DisconnectHandler(platformView);
     }
 
     private void OnPlatformViewSuggestionChosen(object? sender, AutoSuggestBoxSuggestionChosenEventArgs e)
     {
-        VirtualView?.RaiseSuggestionChosen(e);
+        VirtualView?.SuggestionChosen(e.SelectedItem);
     }
     private void OnPlatformViewTextChanged(object? sender, AutoSuggestBoxTextChangedEventArgs e)
     {
-        VirtualView?.NativeControlTextChanged(e);
+        VirtualView?.NativeControlTextChanged(PlatformView.Text, (AutoSuggestBoxTextChangeReason)e.Reason);
     }
     private void OnPlatformViewQuerySubmitted(object? sender, AutoSuggestBoxQuerySubmittedEventArgs e)
     {
-        VirtualView?.RaiseQuerySubmitted(e);
+        VirtualView?.RaiseQuerySubmitted(e.QueryText, e.ChosenSuggestion);
     }
     public static void MapText(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
     {
@@ -87,8 +82,7 @@ public partial class AutoSuggestBoxHandler : ViewHandler<IAutoSuggestBox, AutoSu
 
     private void UpdateTextColor(AutoSuggestBoxView platformView)
     {
-        var color = VirtualView?.TextColor;
-        platformView.SetTextColor(color.ToPlatform());
+        platformView.SetTextColor(VirtualView?.TextColor);
     }
     private void UpdateDisplayMemberPath(AutoSuggestBoxHandler handler, IAutoSuggestBox view)
     {

@@ -1,0 +1,10 @@
+﻿[*.cs]
+
+# CS8632: The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+dotnet_diagnostic.CS8632.severity = none
+dotnet_diagnostic.CA1822.severity = none
+dotnet_code_quality.CA1826.exclude_ordefault_methods = true
+dotnet_diagnostic.IDE1006.severity = none
+dotnet_diagnostic.IDE0300.severity = none
+dotnet_diagnostic.IDE0305.severity = none
+dotnet_diagnostic.IDE0028.severity = none
