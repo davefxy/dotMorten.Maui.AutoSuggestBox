@@ -49,5 +49,12 @@ namespace SampleApp.Views
             else if (sender == SuggestBox2)
                 SuggestBox2.Unfocus();
         }
+        private void Waypoint_SuggestionChosen(object sender, AutoSuggestBoxSuggestionChosenEventArgs e)
+        {
+            if (e.SelectedItem == null)
+                return;
+            string item = e.SelectedItem.ToString();
+            status.Text = "Suggestion chosen: " +item;
+        }
     }
 }
